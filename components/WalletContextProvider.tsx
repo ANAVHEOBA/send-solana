@@ -15,10 +15,25 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         new SolflareWalletAdapter({ network: WalletAdapterNetwork.Devnet }), // Use the enum value
     ], []);
 
+    const openPhantomWallet = () => {
+        // Attempt to open the Phantom wallet app
+        const isPhantomInstalled = navigator.userAgent.includes('Phantom'); // Simple check
+
+        if (isPhantomInstalled) {
+            window.location.href = 'phantom://';
+        } else {
+            // Fallback: Open Phantom's website or show a message
+            window.location.href = 'https://phantom.app/';
+        }
+    };
+
     return (
         <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
+                    <button onClick={openPhantomWallet} style={{ margin: '10px' }}>
+                        Open Phantom Wallet
+                    </button>
                     <WalletMultiButton />
                     {children}
                 </WalletModalProvider>
