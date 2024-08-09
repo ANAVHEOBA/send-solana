@@ -1,24 +1,19 @@
-import { FC, ReactNode, useMemo } from "react";
+import { FC, ReactNode, useMemo } from 'react';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
-import { WalletModalProvider, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import * as web3 from '@solana/web3.js';
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
-import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'; // Ensure this import is correct
+import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { clusterApiUrl } from '@solana/web3.js';
+import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 
-require('@solana/wallet-adapter-react-ui/styles.css');
+import '@solana/wallet-adapter-react-ui/styles.css';
 
 const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const endpoint = web3.clusterApiUrl('devnet');
+    const endpoint = clusterApiUrl('devnet');
 
-    // Create a list of wallet adapters
-    const wallets = useMemo(
-        () => [
-            new PhantomWalletAdapter(),
-            new SolflareWalletAdapter({ network: WalletAdapterNetwork.Devnet }), // Use the enum value
-        ],
-        []
-    );
+    const wallets = useMemo(() => [
+        new PhantomWalletAdapter(),
+        new SolflareWalletAdapter({ network: WalletAdapterNetwork.Devnet }), // Use the enum value
+    ], []);
 
     return (
         <ConnectionProvider endpoint={endpoint}>
