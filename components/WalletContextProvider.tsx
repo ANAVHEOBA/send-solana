@@ -1,9 +1,12 @@
+
 import { FC, ReactNode, useMemo } from "react";
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
-import { WalletModalProvider, WalletDisconnectButton, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { WalletModalProvider, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import * as web3 from '@solana/web3.js';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'; // Ensure this import is correct
+
 require('@solana/wallet-adapter-react-ui/styles.css');
 
 const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
@@ -13,7 +16,7 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const wallets = useMemo(
         () => [
             new PhantomWalletAdapter(),
-            new SolflareWalletAdapter({ network: 'devnet' }),
+            new SolflareWalletAdapter({ network: WalletAdapterNetwork.Devnet }), // Use the enum value
         ],
         []
     );
@@ -22,7 +25,6 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
-                    {/* You can add WalletMultiButton to allow users to choose their preferred wallet */}
                     <WalletMultiButton />
                     {children}
                 </WalletModalProvider>
