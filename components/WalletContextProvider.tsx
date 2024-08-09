@@ -4,42 +4,29 @@ import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-r
 import { clusterApiUrl } from '@solana/web3.js';
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { MobileWalletAdapter } from '@solana/wallet-adapter-mobile';
 
 import '@solana/wallet-adapter-react-ui/styles.css';
 
 const WalletContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const endpoint = clusterApiUrl('devnet');
+  const endpoint = clusterApiUrl('devnet');
 
-    const wallets = useMemo(() => [
-        new PhantomWalletAdapter(),
-        new SolflareWalletAdapter({ network: WalletAdapterNetwork.Devnet }), // Use the enum value
-    ], []);
+  const wallets = useMemo(() => [
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter({ network: WalletAdapterNetwork.Devnet }), // Use the enum value
+    new MobileWalletAdapter(), // Add the mobile wallet adapter
+  ], []);
 
-    const openPhantomWallet = () => {
-        // Attempt to open the Phantom wallet app
-        const isPhantomInstalled = navigator.userAgent.includes('Phantom'); // Simple check
-
-        if (isPhantomInstalled) {
-            window.location.href = 'phantom://';
-        } else {
-            // Fallback: Open Phantom's website or show a message
-            window.location.href = 'https://phantom.app/';
-        }
-    };
-
-    return (
-        <ConnectionProvider endpoint={endpoint}>
-            <WalletProvider wallets={wallets} autoConnect>
-                <WalletModalProvider>
-                    <button onClick={openPhantomWallet} style={{ margin: '10px' }}>
-                        Open Phantom Wallet
-                    </button>
-                    <WalletMultiButton />
-                    {children}
-                </WalletModalProvider>
-            </WalletProvider>
-        </ConnectionProvider>
-    );
+  return (
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>
+          <WalletMultiButton />
+          {children}
+        </WalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
+  );
 };
 
 export default WalletContextProvider;
